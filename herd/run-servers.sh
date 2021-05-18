@@ -26,7 +26,7 @@ memcached -l 0.0.0.0 1>/dev/null 2>/dev/null &
 sleep 1
 
 blue "Starting master process"
-sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
+sudo LD_LIBRARY_PATH=LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
 	numactl --cpunodebind=0 --membind=0 ./main \
 	--master 1 \
 	--base-port-index 0 \
@@ -36,7 +36,7 @@ sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
 sleep 1
 
 blue "Starting worker threads"
-sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
+sudo LD_LIBRARY_PATH=LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
 	numactl --cpunodebind=0 --membind=0 ./main \
 	--is-client 0 \
 	--base-port-index 0 \
