@@ -79,3 +79,4 @@ cd "$script_initial_dir"
 cd herd
 sed -i 's/-Werror//g' Makefile
 make
+cd "$script_initial_dir"
