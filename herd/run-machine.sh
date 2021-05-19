@@ -1,7 +1,8 @@
+#!/bin/bash
 # A function to echo in blue color
 function blue() {
-	es=`tput setaf 4`
-	ee=`tput sgr0`
+	es=$(tput setaf 4)
+	ee=$(tput sgr0)
 	echo "${es}$1${ee}"
 }
 
