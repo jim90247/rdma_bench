@@ -6,6 +6,7 @@
 #include <numaif.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ipc.h>
@@ -208,12 +209,16 @@ static inline uint32_t hrd_fastrand(uint64_t* seed) {
   return (uint32_t)(*seed >> 32);
 }
 
-static inline long long hrd_get_cycles() {
-  unsigned low, high;
-  unsigned long long val;
+static inline uint64_t hrd_get_cycles() {
+  uint64_t val = 0;
+#if defined(__x86_64__)
+  uint32_t low, high;
   asm volatile("rdtsc" : "=a"(low), "=d"(high));
   val = high;
   val = (val << 32) | low;
+#elif defined(__aarch64__)
+  asm volatile("isb; mrs %0, cntvct_el0" : "=r"(val));
+#endif
   return val;
 }
 
