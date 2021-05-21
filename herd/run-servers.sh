@@ -10,6 +10,9 @@ export HRD_REGISTRY_IP="10.113.1.47"
 export MLX5_SINGLE_THREADED=1
 export MLX4_SINGLE_THREADED=1
 
+worker_log=${1:-worker.log}
+blue "Saving a copy of worker log to ${worker_log}"
+
 blue "Removing SHM key 24 (request region hugepages)"
 sudo ipcrm -M 24
 
@@ -37,9 +40,11 @@ sudo LD_LIBRARY_PATH=LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E
 sleep 1
 
 blue "Starting worker threads"
+# `stdbuf --output=L` makes stdout line-buffered even when redirected to file using tee
 sudo LD_LIBRARY_PATH=LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
+	stdbuf --output=L \
 	numactl --cpunodebind=0 --membind=0 ./main \
 	--is-client 0 \
 	--base-port-index 0 \
 	--num-server-ports 2 \
-	--postlist 32 &
+	--postlist 32 | tee "$worker_log" &
