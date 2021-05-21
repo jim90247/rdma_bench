@@ -16,6 +16,8 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+
+#include <cstdint>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -241,11 +243,17 @@ static inline uint32_t hrd_fastrand(uint64_t* seed) {
   return static_cast<uint32_t>((*seed) >> 32);
 }
 
-static inline size_t hrd_get_cycles() {
-  uint64_t rax;
-  uint64_t rdx;
-  asm volatile("rdtsc" : "=a"(rax), "=d"(rdx));
-  return static_cast<size_t>((rdx << 32) | rax);
+static inline uint64_t hrd_get_cycles() {
+  uint64_t val = 0;
+#if defined(__x86_64__)
+  uint32_t low, high;
+  asm volatile("rdtsc" : "=a"(low), "=d"(high));
+  val = high;
+  val = (val << 32) | low;
+#elif defined(__aarch64__)
+  asm volatile("isb; mrs %0, cntvct_el0" : "=r"(val));
+#endif
+  return val;
 }
 
 static inline int hrd_is_power_of_2(uint64_t n) { return n && !(n & (n - 1)); }
@@ -254,6 +262,6 @@ uint8_t* hrd_malloc_socket(int shm_key, size_t size, size_t socket_id);
 int hrd_free(int shm_key, void* shm_buf);
 void hrd_red_printf(const char* format, ...);
 void hrd_get_formatted_time(char* timebuf);
-void hrd_nano_sleep(size_t ns);
+void hrd_nano_sleep(uint64_t ns);
 char* hrd_getenv(const char* name);
 void hrd_bind_to_core(std::thread& thread, size_t n);

@@ -273,11 +273,22 @@ void hrd_red_printf(const char* format, ...) {
   va_end(args);
 }
 
-void hrd_nano_sleep(size_t ns) {
-  size_t start = hrd_get_cycles();
-  size_t end = start;
-  size_t upp = (2.1 * ns);
-  while (end - start < upp) end = hrd_get_cycles();
+void hrd_nano_sleep(uint64_t ns) {
+  uint64_t start = hrd_get_cycles();
+  uint64_t end = start;
+  uint64_t timer_freq_hz = 0ULL;
+#if defined(__x86_64__)
+  // EPYC 7702P CPU frequency: 2000 MHz, from
+  // https://en.wikichip.org/wiki/amd/epyc/7702p
+  timer_freq_hz = 2000000000ULL;
+#elif defined(__aarch64__)
+  // get BlueField-2 CPU frequency with arm v8 instruction
+  asm volatile("mrs %0, cntfrq_el0" : "=r"(timer_freq_hz));
+#endif
+  uint64_t upp = (ns * timer_freq_hz) / 1000000000;
+  while (end - start < upp) {
+    end = hrd_get_cycles();
+  }
 }
 
 // Get the LID of a port on the device specified by @ctx

@@ -5,7 +5,7 @@ set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_LINK_EXECUTABLE g++)
 add_definitions(-std=c++11)
 
-add_definitions(-Wall -Wextra -Werror -pedantic)
+add_definitions(-Wall -Wextra -pedantic)
 add_definitions(-Wsign-conversion)
 add_definitions(-Wold-style-cast)
 

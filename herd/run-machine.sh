@@ -1,7 +1,8 @@
+#!/bin/bash
 # A function to echo in blue color
 function blue() {
-	es=`tput setaf 4`
-	ee=`tput sgr0`
+	es=$(tput setaf 4)
+	ee=$(tput sgr0)
 	echo "${es}$1${ee}"
 }
 
@@ -22,7 +23,7 @@ num_threads=14		# Threads per client machine
 
 blue "Running $num_threads client threads"
 
-sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
+sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
 	numactl --cpunodebind=0 --membind=0 ./main \
 	--num-threads $num_threads \
 	--base-port-index 0 \
