@@ -5,7 +5,7 @@ export HRD_REGISTRY_IP="192.168.223.1"
 
 drop_shm
 
-num_server_threads=1
+num_server_threads=${THREADS:-1}
 
 blue "Reset server QP registry"
 sudo pkill memcached
@@ -26,10 +26,10 @@ flags="
 
 # Check for non-gdb mode
 if [ "$#" -eq 0 ]; then
-  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E numactl --cpunodebind=0 --membind=0 ../build/rw-tput-sender "$flags"
+  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E numactl --cpunodebind=0 --membind=0 ../build/rw-tput-sender $flags
 fi
 
 # Check for gdb mode
 if [ "$#" -eq 1 ]; then
-  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E gdb -ex run --args ../build/rw-tput-sender "$flags"
+  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E gdb -ex run --args ../build/rw-tput-sender $flags
 fi
