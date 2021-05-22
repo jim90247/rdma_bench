@@ -10,7 +10,8 @@ client_ports=${CLIENT_PORTS:-1}
 client_threads=${CLIENT_THREADS:-12}
 
 total_client_threads=$((num_client_nodes * client_threads))
-postlist=${POSTLIST:-$total_client_threads}
+# postlist = min(32, total_client_threads)
+postlist=${POSTLIST:-$((total_client_threads > 32 ? 32 : total_client_threads))}
 scripts=(run-machine.sh run-servers.sh)
 
 sed -i -E "s/HRD_REGISTRY_IP=.*/HRD_REGISTRY_IP=\"${server_ip}\"/g" "${scripts[@]}"
