@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-source $(dirname $0)/../scripts/utils.sh
-source $(dirname $0)/../scripts/mlx_env.sh
-export HRD_REGISTRY_IP="10.10.1.1"
+source "$(dirname $0)/../scripts/utils.sh"
+source "$(dirname $0)/../scripts/mlx_env.sh"
+export HRD_REGISTRY_IP="192.168.223.1"
 
 drop_shm
 
@@ -35,10 +35,10 @@ flags="\
 
 # Check for non-gdb mode
 if [ "$#" -eq 1 ]; then
-  sudo -E numactl --cpunodebind=0 --membind=0 $executable $flags
+  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E numactl --cpunodebind=0 --membind=0 $executable "$flags"
 fi
 
 # Check for gdb mode
 if [ "$#" -eq 2 ]; then
-  sudo -E gdb -ex run --args $executable $flags
+  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E gdb -ex run --args $executable "$flags"
 fi
