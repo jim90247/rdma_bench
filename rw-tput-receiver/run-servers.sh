@@ -8,6 +8,7 @@ exe="../build/rw-tput-receiver"
 chmod +x $exe
 
 num_server_threads=${THREADS:-1}
+uc=${uc:-0}
 
 blue "Reset server QP registry"
 sudo pkill memcached
@@ -22,7 +23,7 @@ blue "Starting $num_server_threads server threads"
 flags="
 	--num_threads $num_server_threads \
 	--dual_port 0 \
-  --use_uc 0 \
+  --use_uc ${uc} \
   --is_client 0
 "
 

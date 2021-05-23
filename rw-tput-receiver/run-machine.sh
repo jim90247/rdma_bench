@@ -8,7 +8,8 @@ exe="../build/rw-tput-receiver"
 chmod +x $exe
 
 num_threads=${THREADS:-1}			# Threads per client machine
-blue "Running $num_threads client threads"
+uc=${uc:-0}
+blue "Running $num_threads client threads. uc=${uc}"
 
 # Check number of arguments
 if [ "$#" -gt 2 ]; then
@@ -26,7 +27,7 @@ fi
 flags="\
   --num_threads $num_threads \
 	--dual_port 0 \
-	--use_uc 0 \
+	--use_uc ${uc} \
 	--is_client 1 \
 	--machine_id $1 \
 	--size 16 \
