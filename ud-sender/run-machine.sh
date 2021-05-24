@@ -34,12 +34,12 @@ flags="\
 
 # Check for non-gdb mode
 if [ "$#" -eq 1 ]; then
-  sudo LD_LIBRARY_PATH=LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
+  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
     numactl --cpunodebind=0 --membind=0 $executable $flags
 fi
 
 # Check for gdb mode
 if [ "$#" -eq 2 ]; then
-  sudo LD_LIBRARY_PATH=LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
+  sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
     gdb -ex run --args $executable $flags
 fi
