@@ -8,7 +8,7 @@ exe="../build/rw-tput-receiver"
 chmod +x $exe
 
 num_threads=${THREADS:-1} # Threads per client machine
-uc=${uc:-0}
+uc=${uc:-1}
 payload=${PAYLOAD:-32}
 blue "Running $num_threads client threads. uc=${uc}"
 
@@ -32,7 +32,7 @@ flags="\
 	--is_client 1 \
 	--machine_id $1 \
 	--size $payload \
-	--postlist 4 \
+	--postlist 1 \
   --do_read 0
 "
 
