@@ -6,7 +6,7 @@ export HRD_REGISTRY_IP="192.168.223.1"
 drop_shm
 
 num_server_threads=${THREADS:-1}
-payload=${PAYLOAD:-32}
+payload=${PAYLOAD:-16}
 do_read=${READ:-0}
 
 blue "Reset server QP registry"

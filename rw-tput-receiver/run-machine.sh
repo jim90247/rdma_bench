@@ -9,7 +9,7 @@ chmod +x $exe
 
 num_threads=${THREADS:-1} # Threads per client machine
 uc=${uc:-1}
-payload=${PAYLOAD:-32}
+payload=${PAYLOAD:-16}
 blue "Running $num_threads client threads. uc=${uc}"
 
 # Check number of arguments
