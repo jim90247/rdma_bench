@@ -9,26 +9,26 @@ drop_shm
 executable="../build/rw-tput-sender"
 chmod +x $executable
 
-num_threads=${THREADS:-1}			# Threads per client machine
+num_threads=${THREADS:-1} # Threads per client machine
 blue "Running $num_threads client threads"
 
 # Check number of arguments
 if [ "$#" -gt 2 ]; then
   blue "Illegal number of arguments."
   blue "Usage: ./run-machine.sh <machine_id>, or ./run-machine.sh <machine_id> gdb"
-	exit
+  exit
 fi
 
 if [ "$#" -eq 0 ]; then
   blue "Illegal number of arguments."
   blue "Usage: ./run-machine.sh <machine_id>, or ./run-machine.sh <machine_id> gdb"
-	exit
+  exit
 fi
 
 flags="\
   --num_threads $num_threads \
 	--dual_port 0 \
-	--use_uc 0 \
+	--use_uc 1 \
 	--is_client 1 \
 	--machine_id $1
 "

@@ -6,6 +6,8 @@ export HRD_REGISTRY_IP="192.168.223.1"
 drop_shm
 
 num_server_threads=${THREADS:-1}
+payload=${PAYLOAD:-32}
+do_read=${READ:-0}
 
 blue "Reset server QP registry"
 sudo pkill memcached
@@ -15,13 +17,13 @@ sleep 1
 blue "Starting $num_server_threads server threads"
 
 flags="
-	--num_threads $num_server_threads \
-	--dual_port 0 \
-  --use_uc 0 \
-	--is_client 0 \
-	--size 64 \
-	--postlist 1 \
-	--do_read 1
+  --num_threads $num_server_threads \
+  --dual_port 0 \
+  --use_uc 1 \
+  --is_client 0 \
+  --size $payload \
+  --postlist 1 \
+  --do_read $do_read
 "
 
 # Check for non-gdb mode

@@ -7,21 +7,22 @@ drop_shm
 exe="../build/rw-tput-receiver"
 chmod +x $exe
 
-num_threads=${THREADS:-1}			# Threads per client machine
+num_threads=${THREADS:-1} # Threads per client machine
 uc=${uc:-0}
+payload=${PAYLOAD:-32}
 blue "Running $num_threads client threads. uc=${uc}"
 
 # Check number of arguments
 if [ "$#" -gt 2 ]; then
   blue "Illegal number of arguments."
   blue "Usage: ./run-machine.sh <machine_id>, or ./run-machine.sh <machine_id> gdb"
-	exit
+  exit
 fi
 
 if [ "$#" -eq 0 ]; then
   blue "Illegal number of arguments."
   blue "Usage: ./run-machine.sh <machine_id>, or ./run-machine.sh <machine_id> gdb"
-	exit
+  exit
 fi
 
 flags="\
@@ -30,7 +31,7 @@ flags="\
 	--use_uc ${uc} \
 	--is_client 1 \
 	--machine_id $1 \
-	--size 16 \
+	--size $payload \
 	--postlist 4 \
   --do_read 0
 "
