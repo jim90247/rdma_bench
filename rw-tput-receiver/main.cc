@@ -8,6 +8,7 @@
 static constexpr size_t kAppBufSize = (8 * 1024 * 1024);
 static constexpr size_t kAppMaxPostlist = 64;
 static constexpr size_t kAppUnsigBatch = 64;
+static constexpr double kPerfIntervalSeconds = 5.0;
 
 DEFINE_uint64(num_threads, 0, "Number of threads");
 DEFINE_uint64(is_client, 0, "Is this process a client?");
@@ -110,6 +111,7 @@ void run_client(thread_params_t* params) {
   struct ibv_sge sgl[kAppMaxPostlist];
   struct ibv_wc wc;
   size_t rolling_iter = 0;  // For performance measurement
+  uint64_t last_ts = 0;     // For performance measurement
   size_t nb_tx = 0;         // For selective signaling
   int ret;
 
@@ -123,15 +125,19 @@ void run_client(thread_params_t* params) {
   rt_assert(stride * FLAGS_postlist <= kAppBufSize);
 
   auto opcode = FLAGS_do_read == 0 ? IBV_WR_RDMA_WRITE : IBV_WR_RDMA_READ;
+  
+  // start timestamp counter
+  last_ts = hrd_get_cycles();
 
   while (true) {
-    if (rolling_iter >= KB(512)) {
+    if (unlikely(hrd_elapsed_seconds(last_ts, hrd_get_cycles()) > kPerfIntervalSeconds)) {
       clock_gettime(CLOCK_REALTIME, &end);
       double seconds = (end.tv_sec - start.tv_sec) +
                        (end.tv_nsec - start.tv_nsec) / 1000000000.0;
       double tput_mrps = rolling_iter / (seconds * 1000000);
       printf("main: Client %zu: %.2f M/s\n", clt_gid, tput_mrps);
       rolling_iter = 0;
+      last_ts = hrd_get_cycles();
 
       // Per-machine stats
       params->tput[clt_lid] = tput_mrps;
