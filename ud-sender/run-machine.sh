@@ -27,9 +27,9 @@ fi
 
 flags="\
   --num_threads $num_threads \
-	--dual_port 0 \
-	--is_client 1 \
-	--machine_id $1
+  --dual_port 0 \
+  --is_client 1 \
+  --machine_id $1
 "
 
 # Check for non-gdb mode
