@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-source $(dirname $0)/../scripts/utils.sh
-source $(dirname $0)/../scripts/mlx_env.sh
+source "$(dirname $0)/../scripts/utils.sh"
+source "$(dirname $0)/../scripts/mlx_env.sh"
 export HRD_REGISTRY_IP="192.168.223.1"
 
 drop_shm
@@ -21,8 +21,8 @@ echo "Server: memcached server is open for business on port 11211"
 blue "Starting $num_server_threads server threads"
 
 flags="
-	--num_threads $num_server_threads \
-	--dual_port 0 \
+  --num_threads $num_server_threads \
+  --dual_port 0 \
   --use_uc ${uc} \
   --is_client 0
 "

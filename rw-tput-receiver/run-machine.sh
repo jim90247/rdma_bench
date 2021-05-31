@@ -8,7 +8,7 @@ exe="../build/rw-tput-receiver"
 chmod +x $exe
 
 num_threads=${THREADS:-1} # Threads per client machine
-uc=${uc:-1}
+uc=${uc:-0}
 payload=${PAYLOAD:-16}
 blue "Running $num_threads client threads. uc=${uc}"
 
@@ -27,13 +27,13 @@ fi
 
 flags="\
   --num_threads $num_threads \
-	--dual_port 0 \
-	--use_uc ${uc} \
-	--is_client 1 \
-	--machine_id $1 \
-	--size $payload \
-	--postlist 1 \
-  --do_read 0
+  --dual_port 0 \
+  --use_uc ${uc} \
+  --is_client 1 \
+  --machine_id $1 \
+  --size $payload \
+  --postlist 1 \
+  --do_read 1
 "
 
 # Check for non-gdb mode
