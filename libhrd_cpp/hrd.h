@@ -256,6 +256,29 @@ static inline uint64_t hrd_get_cycles() {
   return val;
 }
 
+/**
+ * @brief Return the clock frequency (unit: cycles/second). Only defined for AMD EPYC and BlueField-2.
+ * 
+ * @return uint64_t the frequency.
+ */
+static inline uint64_t hrd_get_cycles_hz() {
+  uint64_t timer_freq_hz = 1;
+#if defined(__x86_64__)
+  // EPYC 7702P CPU frequency: 2000 MHz, from
+  // https://en.wikichip.org/wiki/amd/epyc/7702p
+  timer_freq_hz = 2000000000ULL;
+#elif defined(__aarch64__)
+  // get BlueField-2 CPU frequency with arm v8 instruction
+  asm volatile("mrs %0, cntfrq_el0" : "=r"(timer_freq_hz));
+#endif
+  return timer_freq_hz;
+}
+
+static inline double hrd_elapsed_seconds(uint64_t start_cycle, uint64_t end_cycle) {
+  static uint64_t timer_freq_hz = hrd_get_cycles_hz();
+  return static_cast<double>(end_cycle - start_cycle) / timer_freq_hz;
+}
+
 static inline int hrd_is_power_of_2(uint64_t n) { return n && !(n & (n - 1)); }
 
 uint8_t* hrd_malloc_socket(int shm_key, size_t size, size_t socket_id);

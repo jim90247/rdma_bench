@@ -30,5 +30,5 @@ sudo LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-"$HOME/.local/lib"}" -E \
 	--num-server-ports 2 \
 	--num-client-ports 2 \
 	--is-client 1 \
-	--update-percentage 0 \
+	--update-percentage 5 \
 	--machine-id $1 &
