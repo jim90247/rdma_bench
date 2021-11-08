@@ -60,3 +60,8 @@ CTestTestfile.cmake
 ibnet_out
 scripts/autorun_node_file
 gdb_history
+
+# vscode
+.vscode/*
+.cache/*
+*.code-workspace
