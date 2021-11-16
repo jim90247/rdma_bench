@@ -29,6 +29,7 @@ void* run_worker(void* arg) {
   assert(num_server_ports < MAX_SERVER_PORTS); /* Avoid dynamic alloc */
   struct hrd_ctrl_blk* cb[MAX_SERVER_PORTS];
 
+  // Create queue pairs for SEND responses for each server ports
   for (i = 0; i < num_server_ports; i++) {
     int ib_port_index = base_port_index + i;
 
@@ -93,7 +94,7 @@ void* run_worker(void* arg) {
   struct ibv_send_wr wr[NUM_CLIENTS], *bad_send_wr = NULL;
   struct ibv_sge sgl[NUM_CLIENTS];
 
-  /* If postlist is diabled, remember the cb to send() each @wr from */
+  /* If postlist is disabled, remember the cb to send() each @wr from */
   int cb_for_wr[NUM_CLIENTS];
 
   /* If postlist is enabled, we instead create per-cb linked lists of wr's */

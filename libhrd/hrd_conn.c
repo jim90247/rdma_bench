@@ -385,6 +385,7 @@ void hrd_create_conn_qps(struct hrd_ctrl_blk* cb) {
 #endif
 
 #if HRD_CONNECT_IB_ATOMICS == 1
+    // https://man7.org/linux/man-pages/man3/ibv_query_device_ex.3.html
     assert(cb->use_uc == 0); /* This is for atomics; no atomics on UC */
     struct ibv_exp_qp_init_attr create_attr;
     memset(&create_attr, 0, sizeof(struct ibv_exp_qp_init_attr));
