@@ -117,7 +117,11 @@ void* run_worker(void* arg) {
    * need to  pass a contiguous array of operations to MICA, and marshalling
    * and unmarshalling the contiguous array will be expensive.
    */
-  int cb_i = -1, clt_i = -1;
+  // Index of control block. There is one control block for each server port. It
+  // means that cb_i is always zero if there's only one server port.
+  int cb_i = -1;
+  // index of client
+  int clt_i = -1;
   int poll_i, wr_i;
   assert(NUM_CLIENTS % num_server_ports == 0);
 
@@ -192,7 +196,8 @@ void* run_worker(void* arg) {
         cb_for_wr[wr_i] = cb_i;
       }
 
-      /* Fill in the work request */
+      /* Fill in the work request (except the scatter gather elements, they will
+       * be filled in next for loop, after mica_batch_op(). */
       wr[wr_i].wr.ud.ah = ah[clt_i];
       wr[wr_i].wr.ud.remote_qpn = clt_qp[clt_i]->qpn;
       wr[wr_i].wr.ud.remote_qkey = HRD_DEFAULT_QKEY;
@@ -223,6 +228,9 @@ void* run_worker(void* arg) {
     }
 
     mica_batch_op(&kv, wr_i, op_ptr_arr, resp_arr);
+
+    // We may insert mirroring/invalidation operations (Clover compute node)
+    // here.
 
     /*
      * Fill in the computed @val_ptr's. For non-postlist mode, this loop
